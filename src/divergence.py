@@ -27,15 +27,15 @@ FIELD_POSTURE = {
 }
 
 TRANSITION = {
-    ALPHA: {ALPHA: 0.70, BETA: 0.24, DELTA: 0.06},
-    BETA:  {ALPHA: 0.08, BETA: 0.80, DELTA: 0.12},
-    DELTA: {ALPHA: 0.03, BETA: 0.19, DELTA: 0.78},
+    ALPHA: {ALPHA: 0.70, BETA: 0.26, DELTA: 0.04},
+    BETA:  {ALPHA: 0.10, BETA: 0.85, DELTA: 0.05},
+    DELTA: {ALPHA: 0.05, BETA: 0.30, DELTA: 0.65},
 }
 
 # (mean, dispersion k). Variance = mean + mean^2 / k, so smaller k is burstier.
-EMISSION = {ALPHA: (4.6, 2.2), BETA: (2.0, 1.5), DELTA: (0.10, 0.8)}
+EMISSION = {ALPHA: (4.6, 2.2), BETA: (3.2, 4.5), DELTA: (0.10, 0.8)}
 
-WEEKDAY_WEIGHT = [1.0, 1.05, 1.0, 1.0, 0.90, 0.38, 0.26]  # Mon..Sun
+WEEKDAY_WEIGHT = [1.0, 1.05, 1.0, 1.0, 0.90, 0.75, 0.60]  # Mon..Sun
 
 # A freak 30-commit day would blow out GitHub's quartile thresholds and wash
 # every other day pale, so the upper tail is truncated rather than left free.
@@ -122,7 +122,7 @@ def observe(day: date, field: int, rng: random.Random) -> tuple[int, int, str | 
 
 def drift(current: float, count: int, field: int, rng: random.Random) -> float:
     """Random walk on the divergence reading. Reports six decimals of nothing."""
-    step = rng.gauss(0.0, 0.004) + (count - 2.0) * 0.0011
+    step = rng.gauss(0.0, 0.004) + (count - 3.2) * 0.0011
     if field == ALPHA:
         step += 0.0025
     return max(0.0, min(1.999999, current + step))
