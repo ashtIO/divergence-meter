@@ -1,11 +1,18 @@
 name: Daily Observation
 
-# 11:00 UTC keeps the commit timestamp far from any midnight boundary, so the
-# contribution square lands on the intended day in every plausible timezone.
-# GitHub delays scheduled runs under load; the job is idempotent per date.
+# Eight windows. Each run emits only a share of the day's quota, so commits
+# scatter across the day. GitHub delays scheduled runs under load; the job is
+# idempotent against commits already made today, so drift and skips are safe.
 on:
   schedule:
-    - cron: "0 11 * * *"
+    - cron: "0 6 * * *"
+    - cron: "0 8 * * *"
+    - cron: "0 10 * * *"
+    - cron: "0 12 * * *"
+    - cron: "0 14 * * *"
+    - cron: "0 16 * * *"
+    - cron: "0 19 * * *"
+    - cron: "0 22 * * *"
   workflow_dispatch:
 
 permissions:
@@ -14,18 +21,21 @@ permissions:
 jobs:
   observe:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      # The graph only greens if the commit author matches a verified email on
-      # the account. The Actions bot identity counts for nothing.
+      # The graph only greens if the author matches a verified email on the
+      # account. The Actions bot identity counts for nothing.
       - name: Assume lab member identity
         run: |
-          git config user.name  "${{ vars.LAB_MEMBER_NAME  || github.actor }}"
+          git config user.name  "${{ vars.LAB_MEMBER_NAME || github.actor }}"
           git config user.email "${{ vars.LAB_MEMBER_EMAIL }}"
           test -n "${{ vars.LAB_MEMBER_EMAIL }}" || {
             echo "::error::Set repository variable LAB_MEMBER_EMAIL to a verified GitHub email."

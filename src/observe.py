@@ -7,9 +7,11 @@ that fires twice should not double-count a day.
 from __future__ import annotations
 
 import argparse
+import math
 import random
 import subprocess
 import sys
+import time
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -21,6 +23,13 @@ from dmail import compose
 
 ROOT = Path(__file__).resolve().parent.parent
 READOUT_PATH = ROOT / "DIVERGENCE.md"
+
+# Transmission windows, UTC. Each run claims a share of the day's quota rather
+# than the whole thing, so commits scatter instead of arriving in one burst.
+# A skipped window is absorbed by the next, since the share is recomputed
+# against the windows still ahead.
+TRANSMISSION_HOURS = [6, 8, 10, 12, 14, 16, 19, 22]
+MAX_JITTER_SECONDS = 1200
 
 OWNERS = ["Hououin Kyouma", "Leslie Knope", "Ben Wyatt", "Jerry Gergich",
           "Makise Kurisu", "Ron Swanson", "Chris Traeger", "Itaru Hashida"]
@@ -77,11 +86,27 @@ def git(*args: str) -> None:
                    stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
 
+def committed_today(day: date) -> int:
+    """GitHub delays, retries and overlaps scheduled jobs, so every run must be
+    idempotent against what the day already contains."""
+    out = subprocess.run(
+        ["git", "rev-list", "--count", f"--since={day.isoformat()}T00:00:00Z", "HEAD"],
+        cwd=ROOT, capture_output=True, text=True, check=True)
+    return int(out.stdout.strip() or 0)
+
+
+def share(remaining: int, hour: int) -> int:
+    ahead = [h for h in TRANSMISSION_HOURS if h >= hour] or [hour]
+    return max(1, math.ceil(remaining / len(ahead)))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--date", type=date.fromisoformat, default=None,
                     help="sample a specific calendar day; does not backdate the commit")
+    ap.add_argument("--hour", type=int, default=None,
+                    help="pretend to run in this UTC transmission window")
     args = ap.parse_args()
 
     today = args.date or datetime.now(timezone.utc).date()
@@ -105,9 +130,22 @@ def main() -> int:
               "Actively working to reduce this department's output.")
         return 0
 
-    rng = random.Random(f"{today}:{divergence}")
-    print(f"{today}  {FIELD_NAME[field]} field, {count} observations")
-    for i in range(1, count + 1):
+    already = 0 if args.dry_run else committed_today(today)
+    remaining = count - already
+    if remaining <= 0:
+        print(f"{today}  quota met ({already}/{count}). Nothing further to transmit.")
+        return 0
+
+    hour = args.hour if args.hour is not None else datetime.now(timezone.utc).hour
+    emitting = min(remaining, share(remaining, hour))
+    rng = random.Random(f"{today}:{divergence}:{already}")
+    print(f"{today}  {FIELD_NAME[field]} field, {count} observations "
+          f"({already} sent, emitting {emitting} in the {hour:02d}:00 window)")
+
+    if not args.dry_run:
+        time.sleep(rng.randint(0, MAX_JITTER_SECONDS))
+
+    for i in range(already + 1, already + emitting + 1):
         report = readout(day, field, divergence, count, i, rng)
         message = compose(field, rng)
         print(f"  {message.splitlines()[0]}")
