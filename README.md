@@ -55,7 +55,7 @@ The upper tail is truncated at 14 because a freak 30-commit day would blow out
 GitHub's quartile thresholds and wash every other day pale.
 
 The chain stores no state. Each run replays the entire worldline from the epoch
-(2026-09-09) to recover its present position. This is Reading Steiner, and it is
+(2026-09-01) to recover its present position. This is Reading Steiner, and it is
 also the correct engineering call: a scheduled Action gets a fresh checkout every
 run, so any stored state would have to be committed, and committing on a
 zero-observation day greens the square and destroys the gap the model just
