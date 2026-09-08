@@ -44,7 +44,7 @@ DAILY_CEILING = 14
 STEINS_GATE_THRESHOLD = 1.048596
 
 # The worldline has an origin. Everything after it is replayed from here.
-EPOCH = date(2026, 9, 1)
+EPOCH = date(2026, 9, 4)
 SEED = 1048596
 
 # (month, day) -> (forced field or None, multiplier, citation)
