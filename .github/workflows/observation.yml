@@ -1,0 +1,39 @@
+name: Daily Observation
+
+# 11:00 UTC keeps the commit timestamp far from any midnight boundary, so the
+# contribution square lands on the intended day in every plausible timezone.
+# GitHub delays scheduled runs under load; the job is idempotent per date.
+on:
+  schedule:
+    - cron: "0 11 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # The graph only greens if the commit author matches a verified email on
+      # the account. The Actions bot identity counts for nothing.
+      - name: Assume lab member identity
+        run: |
+          git config user.name  "${{ vars.LAB_MEMBER_NAME  || github.actor }}"
+          git config user.email "${{ vars.LAB_MEMBER_EMAIL }}"
+          test -n "${{ vars.LAB_MEMBER_EMAIL }}" || {
+            echo "::error::Set repository variable LAB_MEMBER_EMAIL to a verified GitHub email."
+            exit 1
+          }
+
+      - name: Observe the worldline
+        run: python3 src/observe.py
+
+      - name: Transmit D-Mail
+        run: git push
