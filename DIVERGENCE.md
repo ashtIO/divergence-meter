@@ -7,18 +7,18 @@
 **Attractor field:** Beta
 **Operating posture:** Steady-State Delivery Cadence
 **Observation window:** 2026-09-15
-**Observations this cycle:** 2 of 5
+**Observations this cycle:** 3 of 5
 
 ## Key Performance Indicators
 
 | Indicator | Reading | WoW | Owner |
 |---|---|---|---|
-| Worldline Divergence | 0.329449 | ▲ | Ron Swanson |
-| Synergy Coefficient (name subject to change) | 0.69 | ▲ | Ron Swanson |
-| Stakeholder Alignment Index | 7.0 | ─ | Ron Swanson |
-| Ideation Throughput | 5 story points | ▲ | Ron Swanson |
-| Bandwidth Utilisation | 136% | ─ | Ron Swanson |
-| Lil Sebastian Sentiment | 5,000 candles | ─ | Ben Wyatt |
+| Worldline Divergence | 0.329449 | ─ | Itaru Hashida |
+| Synergy Coefficient (name subject to change) | 0.97 | ▼ | Hououin Kyouma |
+| Stakeholder Alignment Index | 8.3 | ▲ | Ben Wyatt |
+| Ideation Throughput | 5 story points | ▼ | Chris Traeger |
+| Bandwidth Utilisation | 97% | ─ | Leslie Knope |
+| Lil Sebastian Sentiment | 5,000 candles | ▼ | Chris Traeger |
 
 Ideation Throughput is this cycle's commit count with a different name on it.
 Every other row is a random number. No decisions were informed by this document.
