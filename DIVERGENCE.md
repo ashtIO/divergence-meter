@@ -7,18 +7,18 @@
 **Attractor field:** Alpha
 **Operating posture:** Hypergrowth Operating Posture
 **Observation window:** 2026-10-05
-**Observations this cycle:** 6 of 7
+**Observations this cycle:** 7 of 7
 
 ## Key Performance Indicators
 
 | Indicator | Reading | WoW | Owner |
 |---|---|---|---|
-| Worldline Divergence | 0.361386 | ▲ | Chris Traeger |
-| Synergy Coefficient (name subject to change) | 0.75 | ▼ | Itaru Hashida |
-| Stakeholder Alignment Index | 9.4 | ▼ | Ben Wyatt |
-| Ideation Throughput | 7 story points | ▼ | Leslie Knope |
-| Bandwidth Utilisation | 96% | ▼ | Chris Traeger |
-| Lil Sebastian Sentiment | 5,000 candles | ▼ | Jerry Gergich |
+| Worldline Divergence | 0.361386 | ▼ | Hououin Kyouma |
+| Synergy Coefficient (name subject to change) | 0.68 | ─ | Chris Traeger |
+| Stakeholder Alignment Index | 2.5 | ─ | Leslie Knope |
+| Ideation Throughput | 7 story points | ▲ | Makise Kurisu |
+| Bandwidth Utilisation | 117% | ─ | Chris Traeger |
+| Lil Sebastian Sentiment | 5,000 candles | ─ | Makise Kurisu |
 
 Ideation Throughput is this cycle's commit count with a different name on it.
 Every other row is a random number. No decisions were informed by this document.
